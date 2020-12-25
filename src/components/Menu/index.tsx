@@ -17,7 +17,7 @@ const Menu = () => {
         <ul>
           <li>
             <Link to="/">
-              <img src="https://picsum.photos/seed/image001/500/500" alt="Logo" />
+              <img src="https://res.cloudinary.com/cloud-root/image/upload/v1608155931/app/logo_iajtgc.svg" alt="Logo" />
             </Link>
           </li>
           <li>
