@@ -53,32 +53,6 @@ export const TabsMenu = styled.div`
   }
 `;
 
-export const Search = styled.div`
-  padding: 50px 50px 20px 50px;
-
-  div {
-    position: relative;
-  }
-
-  svg {
-    position: absolute;
-    top: 12px;
-    left: 15px;
-  }
-
-  input {
-    padding: 15px 20px 15px 40px;
-    width: 100%;
-    color: var(--grey3);
-    border-radius: 20px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-
-    &::placeholder {
-      color: var(--grey2);
-    }
-  }
-`;
-
 export const TableItemsList = styled.div`
   width: auto;
   margin: 30px 50px;
@@ -99,7 +73,7 @@ export const TableItemsList = styled.div`
       background: var(--white1);
 
       tr {
-        border-bottom: 1.5px solid var(--grey1);
+        border-bottom: 1px solid var(--grey2-hover);
         transition: background .5s;
 
         &:last-child {

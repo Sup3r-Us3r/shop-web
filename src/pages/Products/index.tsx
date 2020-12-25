@@ -1,5 +1,5 @@
 import {useState, useEffect, useRef} from 'react';
-import {FiSearch as SearchIcon, FiPackage as PackageIcon} from 'react-icons/fi';
+import {FiPackage as PackageIcon} from 'react-icons/fi';
 import {
   AiFillStar as FillStarIcon,
   AiOutlineStar as OutlineStarIcon,
@@ -8,98 +8,151 @@ import {
 import Menu from '../../components/Menu';
 import Header from '../../components/Header';
 import ModalProduct from '../../components/ModalProduct';
-
 import {IModalProductsHandles} from '../../components/ModalProduct';
+import ModalConfirmAction from '../../components/ModalConfirmAction';
+import {IModalConfirmActionHandles} from '../../components/ModalConfirmAction';
+import SearchBar from '../../components/SearchBar';
 
-import {Grid, Wrapper, Search, TabsMenu, TableItemsList} from './styles';
+import {toastError} from '../../config/toast';
+
+import {handleFormatPrice} from '../../utils/formatPrice';
+
+import api from '../../services/api';
+
+import {Grid, Wrapper, TabsMenu, TableItemsList} from './styles';
+
+export interface ICategory {
+  id: number;
+  name: string;
+  image: {
+    public_id: string;
+    url: string;
+  }
+}
+
+export interface IProduct {
+  id: number;
+  star: boolean;
+  name: string;
+  price: number;
+  amount: number;
+  category: string;
+  description: string;
+  images: {
+    id: number;
+    product_id: number;
+    public_id: string;
+    url: string;
+  }[]
+  created_at: Date;
+}
 
 const Products = () => {
   const openProductModalRef = useRef<IModalProductsHandles>(null);
+  const openConfirmActionModalRef = useRef<IModalConfirmActionHandles>(null);
 
-  const [dataFakeTable, setDataFakeTable] = useState<any[]>([]);
-  const [dataFakeCategories, setDataFakeCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const [allProducts, setAllProducts] = useState<IProduct[]>([]);
   const [activeButtonCategory, setActiveButtonCategory] = useState<number>(1);
-  const [toggleFavoriteProduct, setToggleFavoriteProduct] =
-    useState<boolean>(false);
+  const [productIdToRemove, setProductIdToRemove] = useState<number>(0);
+  const [productToUpdate, setProductToUpdate] = useState<IProduct>({} as IProduct);
 
-  function handleActiveButtonCategory(currentButtonIndex: number) {
-    setActiveButtonCategory(currentButtonIndex + 1);
+  const currentCategoryIndexSelectedRef = useRef<number>(-1);
+
+  function handleActiveButtonCategory(
+    originalIndexOfCategory: number,
+    nthChild: number,
+  ) {
+    setActiveButtonCategory(nthChild + 1);
+    currentCategoryIndexSelectedRef.current = originalIndexOfCategory;
+    handleGetDataFromEachCategory(originalIndexOfCategory);
   }
 
   function handleOpenProductModal() {
     openProductModalRef.current?.openModal();
   }
 
-  function handleToggleFavoriteProduct() {
-    setToggleFavoriteProduct(!toggleFavoriteProduct);
+  function handleOpenModalConfirmAction() {
+    openConfirmActionModalRef.current?.openModal();
+  }
+
+  function handleRemoveProduct(productId: number) {
+    setProductIdToRemove(productId);
+    handleOpenModalConfirmAction();
+  }
+
+  function handleUpdateProduct(product: IProduct) {
+    setProductToUpdate(product);
+    handleOpenProductModal();
+  }
+
+  async function handleToggleFavoriteProduct(productId: number) {
+    try {
+      const response = await api.get(`product/togglestar/${productId}`);
+
+      if (response.status === 200) {
+        handleGetDataFromEachCategory(currentCategoryIndexSelectedRef.current);
+      }
+    } catch (err) {
+      const {error} = err.response.data;
+
+      toastError(error);
+    }
+  }
+
+  async function handleGetCategories() {
+    try {
+      const response = await api.get<ICategory[]>('category/index');
+
+      setCategories(response.data);
+    } catch (err) {
+      const {error} = err.response.data;
+
+      toastError(error);
+    }
+  }
+
+  async function handleGetProducts() {
+    try {
+      const response = await api.get<IProduct[]>('product/index');
+
+      setProducts(response.data);
+      setAllProducts(response.data);
+    } catch (err) {
+      const {error} = err.response.data;
+
+      toastError(error);
+    }
+  }
+
+  async function handleGetDataFromEachCategory(indexOfCategory: number) {
+    try {
+      const categoryName = categories
+      .find((_, index) => index === indexOfCategory)?.name;
+
+      if (categoryName) {
+        const response = await api.get<IProduct[]>('product/index', {
+          params: {
+            category: categoryName,
+          },
+        })
+
+        setProducts(response.data);
+        setAllProducts(response.data);
+      } else {
+        await handleGetProducts();
+      }
+    } catch (err) {
+      const { error } = err.response.data;
+
+      toastError(error);
+    }
   }
 
   useEffect(() => {
-    let arrayDataFake = [] as any[];
-
-    for (let i = 1; i <= 20; i++) {
-      arrayDataFake.push(
-        <tr>
-          <td>
-            {
-              toggleFavoriteProduct
-                ? (
-                    <FillStarIcon
-                      color="#39D183"
-                      size={25}
-                      onClick={handleToggleFavoriteProduct}
-                    />
-                  )
-                : (
-                    <OutlineStarIcon
-                      color="#39D183"
-                      size={25}
-                      onClick={handleToggleFavoriteProduct}
-                    />
-                  )
-            }
-          </td>
-          <td>
-            <div>
-              <img src="https://picsum.photos/seed/image001/500/500" alt="Product" />
-              <div>
-                <h1>Title of product</h1>
-                <span>R$ 21,00</span>
-              </div>
-            </div>
-          </td>
-          <td>
-            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolore, autem!</p>
-          </td>
-          <td>
-            <strong>Categoria:</strong>
-            <span>Natura</span>
-          </td>
-          <td>
-            <div>
-              <PackageIcon color="#" size={20} />
-              <span>21</span>
-            </div>
-          </td>
-          <td>
-            <button>Editar</button>
-            <button>Excluir</button>
-          </td>
-        </tr>
-      );
-    }
-
-    setDataFakeTable(arrayDataFake);
-  }, []);
-
-  useEffect(() => {
-    setDataFakeCategories([
-      'Todas categorias',
-      'Natura',
-      'Tapetes',
-      'Kits',
-      'Cama mesa e banho',
-    ]);    
+    handleGetCategories();
+    handleGetProducts();
   }, []);
 
   return (
@@ -114,26 +167,95 @@ const Products = () => {
           </button>
         </Header>
         <TabsMenu activeButtonCategory={activeButtonCategory}>
-          {dataFakeCategories.map((item, index) => (
+          <button
+            onClick={() => handleActiveButtonCategory(-1, 0)}
+          >
+            Todas as categorias
+          </button>
+          {categories.map((category, index) => (
             <button
-              key={String(item)}
-              onClick={() => handleActiveButtonCategory(index)}
+              key={category.id}
+              onClick={() => handleActiveButtonCategory(index, index + 1)}
             >
-              {item}
+              {category.name}
             </button>
           ))}
         </TabsMenu>
-        <ModalProduct ref={openProductModalRef} />
-        <Search>
-          <div>
-            <SearchIcon color="#39D183" size={20} />
-            <input type="text" placeholder="Pesquisar produtos..." />
-          </div>
-        </Search>
+        <ModalProduct
+          ref={openProductModalRef}
+          modalType={!productToUpdate.id ? 'create' : 'update'}
+          categories={categories}
+          productData={productToUpdate}
+          setProductData={setProductToUpdate}
+        />
+        <ModalConfirmAction
+          ref={openConfirmActionModalRef}
+          productId={productIdToRemove}
+        />
+        <SearchBar
+          allProducts={allProducts}
+          setProducts={setProducts}
+        />
         <TableItemsList>
           <table>
             <tbody>
-              {dataFakeTable.map(item => item)}
+              {products.map((product: IProduct) => (
+                <tr key={product.id}>
+                  <td>
+                    {
+                      product.star
+                        ? (
+                            <FillStarIcon
+                              color="#39D183"
+                              size={25}
+                              onClick={
+                                () => handleToggleFavoriteProduct(product.id)
+                              }
+                            />
+                          )
+                        : (
+                            <OutlineStarIcon
+                              color="#39D183"
+                              size={25}
+                              onClick={
+                                () => handleToggleFavoriteProduct(product.id)
+                              }
+                            />
+                          )
+                    }
+                  </td>
+                  <td>
+                    <div>
+                      <img src={product.images[0].url} alt="Product" />
+                      <div>
+                        <h1>{product.name}</h1>
+                        <span>{handleFormatPrice(product.price)}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <p>{product.description}</p>
+                  </td>
+                  <td>
+                    <strong>Categoria:</strong>
+                    <span>{product.category}</span>
+                  </td>
+                  <td>
+                    <div>
+                      <PackageIcon color="#" size={20} />
+                      <span>{product.amount}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <button onClick={
+                      () => handleUpdateProduct(product)
+                    }>Editar</button>
+                    <button onClick={
+                      () => handleRemoveProduct(product.id)
+                    }>Excluir</button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </TableItemsList>
