@@ -1,4 +1,13 @@
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
+
+const loadingAnimation = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
 
 export const Wrapper = styled.div`
   display: flex;
@@ -6,7 +15,7 @@ export const Wrapper = styled.div`
   align-items: center;
 
   position: fixed;
-  z-index: 9999;
+  z-index: 10;
   height: 100vh;
   background: rgba(0, 0, 0, .1);
   top: 0;
@@ -23,7 +32,7 @@ export const Wrapper = styled.div`
     border-radius: 5px;
     max-width: 500px;
 
-    h1 {
+    > h1 {
       color: var(--grey3);
       font-size: 16px;
       text-align: center;
@@ -31,7 +40,7 @@ export const Wrapper = styled.div`
       margin-bottom: 20px;
     }
 
-    svg {
+    > svg {
       position: absolute;
       top: 10px;
       right: 10px;
@@ -54,9 +63,9 @@ export const Wrapper = styled.div`
 
         input {
           padding: 10px;
-          border: 2px solid var(--grey1);
-          border-radius: 5px;
-          color: var(--grey3);
+          border-bottom: 2px solid var(--grey1);
+          color: var(--grey1);
+          background: var(--white1);
           transition: border .5s ease;
 
           &::placeholder {
@@ -64,7 +73,7 @@ export const Wrapper = styled.div`
           }
 
           &:focus {
-            border: 2px solid var(--green1);
+            border-bottom: 2px solid var(--green1);
           }
         }
 
@@ -84,24 +93,24 @@ export const Wrapper = styled.div`
 
         select {
           width: 70%;
-          background: var(--white1);
           padding: 10px 7px;
           margin-right: 5px;
-          border: 2px solid var(--grey1);
-          border-radius: 5px;
+          border-bottom: 2px solid var(--grey1);
           color: var(--grey1);
+          background: var(--white1);
           transition: border .5s ease;
 
           &:focus {
-            border: 2px solid var(--green1);
+            border-bottom: 2px solid var(--green1);
           }
         }
 
         input {
           width: 30%;
           padding: 10px;
-          border: 2px solid var(--grey1);
-          border-radius: 5px;
+          color: var(--grey1);
+          background: var(--white1);
+          border-bottom: 2px solid var(--grey1);
           transition: border .5s ease;
 
           &::placeholder {
@@ -109,14 +118,12 @@ export const Wrapper = styled.div`
           }
 
           &:focus {
-            border: 2px solid var(--green1);
+            border-bottom: 2px solid var(--green1);
           }
         }
       }
 
       > div:nth-child(3) {
-        margin-bottom: 5px;
-
         textarea {
           font-family: 'Roboto';
           font-size: 15px;
@@ -124,10 +131,9 @@ export const Wrapper = styled.div`
           width: 100%;
           padding: 10px;
           resize: none;
-          color: var(--grey3);
-          background: var(--white1);;
-          border: 2px solid var(--grey1);
-          border-radius: 5px;
+          color: var(--grey1);
+          background: var(--white1);
+          border-bottom: 2px solid var(--grey1);
           transition: border .5s ease;
 
           &::placeholder {
@@ -135,7 +141,7 @@ export const Wrapper = styled.div`
           }
 
           &:focus {
-            border: 2px solid var(--green1);
+            border-bottom: 2px solid var(--green1);
           }
         }
       }
@@ -146,6 +152,8 @@ export const Wrapper = styled.div`
         justify-content: center;
         align-items: center;
 
+        margin-top: 10px;
+
         > div:nth-child(1) {
           display: flex;
           justify-content: center;
@@ -153,7 +161,7 @@ export const Wrapper = styled.div`
 
           width: 100%;
           background: var(--white2);
-          border: 2px dashed var(--green1);
+          border: 1.5px dashed var(--green1);
           border-radius: 5px;
 
           input {
@@ -163,6 +171,7 @@ export const Wrapper = styled.div`
           label {
             width: 100%;
             padding: 10px;
+            font-size: 15px;
             color: var(--green1);
             text-align: center;
             cursor: pointer;
@@ -175,7 +184,7 @@ export const Wrapper = styled.div`
         justify-content: flex-start;
         align-items: center;
 
-        padding: 10px 0 5px 0;
+        padding-top: 10px;
         overflow-x: auto;
 
         /* Custom scroll height, width and color */
@@ -221,7 +230,8 @@ export const Wrapper = styled.div`
 
       button {
         margin-top: 10px;
-        padding: 20px;
+        height: 50px;
+        padding: 0 20px;
         background: var(--green1);
         color: var(--white1);
         font-weight: bold;
@@ -230,6 +240,20 @@ export const Wrapper = styled.div`
         &:hover {
           background: var(--green2);
           cursor: pointer;
+        }
+
+        &:disabled {
+          cursor: not-allowed;
+        }
+
+        &:disabled:hover {
+          background: var(--green1);
+        }
+
+        &.submitting {
+          svg {
+            animation: ${loadingAnimation} .8s linear infinite;
+          }
         }
       }
     }
