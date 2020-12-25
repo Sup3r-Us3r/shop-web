@@ -14,29 +14,6 @@ export const Wrapper = styled.main`
   background: var(--white1);
 `;
 
-export const Search = styled.div`
-  position: relative;
-  padding: 20px 50px;
-
-  svg {
-    position: absolute;
-    top: 32px;
-    left: 60px;
-  }
-
-  input {
-    padding: 15px 20px 15px 40px;
-    width: 100%;
-    color: var(--grey3);
-    border-radius: 20px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-
-    &::placeholder {
-      color: var(--grey2);
-    }
-  }
-`;
-
 export const GridItemsList = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -57,12 +34,15 @@ export const GridItemsList = styled.div`
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.05);
+    pointer-events: none;
 
     img {
       height: 100%;
       width: 100px;
       border-top-left-radius: 10px;
       border-bottom-left-radius: 10px;
+      object-fit: cover;
+      user-select: none;
     }
 
     div {
