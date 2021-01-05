@@ -13,8 +13,8 @@ export const Wrapper = styled.aside`
   padding: 30px 0;
   background: var(--grey3);
 
-  ul {
-    &:nth-child(1) {
+  nav ul {
+    li:nth-child(1) {
       a img {
         height: 40px;
         width: 40px;
@@ -24,7 +24,7 @@ export const Wrapper = styled.aside`
     }
 
     li {
-      transition: background .5s;
+      transition: background .5s ease;
 
       a {
         display: flex;
@@ -35,10 +35,10 @@ export const Wrapper = styled.aside`
         height: 70px;
         width: 70px;
 
-        &:active, &:focus {
+        &.active{
           svg {
-            stroke: var(--green1);
-            fill: var(--green1);
+            stroke: var(--green1) !important;
+            fill: var(--green1) !important;
           }
         }
       }
