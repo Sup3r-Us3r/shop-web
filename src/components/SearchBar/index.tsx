@@ -43,7 +43,6 @@ const SearchBar = (
   }
 
   function handleRestoreAllProducts() {
-    console.log(allProducts);
     setProducts(allProducts);
     setProductsFiltered([]);
     setSearch('');

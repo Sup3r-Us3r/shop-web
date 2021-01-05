@@ -28,7 +28,6 @@ const GlobalStyles = createGlobalStyle`
     --white1: #FFFFFF;
     --white2: #F7FAFC;
     --grey1: #CCCCCC;
-    /* --grey1: #B9C8D3; */
     --grey2: #B2BDCE;
     --grey2-hover: rgba(171, 178, 189, 0.5);
     --grey3: #1f2532;
