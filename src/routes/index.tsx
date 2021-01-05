@@ -1,17 +1,26 @@
-import {BrowserRouter, Switch, Route} from 'react-router-dom';
+import {useContext} from 'react';
+import TopBarProgress from 'react-topbar-progress-indicator';
 
-import Home from '../pages/Home';
-import Products from '../pages/Products';
+import AuthContext from '../contexts/auth';
+
+import AuthRoutes from './auth.routes';
+import AppRoutes from './app.routes';
 
 const Routes = () => {
-  return (
-    <BrowserRouter>
-      <Switch>
-        <Route path="/" exact  component={Home} />
-        <Route path="/products" component={Products} />
-      </Switch>
-    </BrowserRouter>
-  );
+  const {signed, loading} = useContext(AuthContext);
+
+  if (loading) {
+    TopBarProgress.config({
+      barColors: {
+        '0': '#39D183',
+        '1': '#40e791',
+      },
+    });
+
+    return <TopBarProgress />;
+  }
+
+  return signed ? <AppRoutes /> : <AuthRoutes />;
 }
 
 export default Routes;
