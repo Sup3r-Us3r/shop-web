@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 
 export const Grid = styled.div`
-  /* display: grid;
-  grid-template-areas: 'menuBar mainContent';
-  grid-template-columns: 70px 1fr; */
-
   display: flex;
   justify-content: space-between;
 
@@ -12,10 +8,8 @@ export const Grid = styled.div`
 `;
 
 export const Wrapper = styled.main`
-  /* grid-area: mainContent; */
   width: calc(100% - 70px);
   margin-left: 70px;
-
   background: var(--white1);
 `;
 
