@@ -1,16 +1,15 @@
 import styled from 'styled-components';
 
 export const Grid = styled.div`
-  display: grid;
-  grid-template-areas: 'menuBar mainContent';
-  grid-template-columns: 70px 1fr;
+  display: flex;
+  justify-content: space-between;
 
   height: 100vh;
 `;
 
 export const Wrapper = styled.main`
-  grid-area: mainContent;
-
+  width: calc(100% - 70px);
+  margin-left: 70px;
   background: var(--white1);
 `;
 
@@ -24,19 +23,22 @@ export const GridItemsList = styled.div`
 
   padding: 20px 50px;
 
-  div {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+  > div {
+    display: grid;
+    grid-template-areas:  'image title'
+                          'image description'
+                          'image action';
+    grid-template-columns: 100px 1fr;
+    grid-template-rows: 30px 1fr 30px;
 
-    position: relative;
     height: 160px;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.05);
-    pointer-events: none;
 
     img {
+      grid-area: image;
+
       height: 100%;
       width: 100px;
       border-top-left-radius: 10px;
@@ -45,98 +47,37 @@ export const GridItemsList = styled.div`
       user-select: none;
     }
 
-    div {
-      display: block;
+    h1 {
+      grid-area: title;
 
+      font-size: 20px;
+      color: var(--grey3);
+      margin: 0 0 10px 10px;
+    }
+
+    p {
+      grid-area: description;
+
+      color: var(--grey1);
+      padding: 5px 0;
+      font-size: 16px;
+      margin: 0 0 10px 10px;
+      overflow-y: auto;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        width: 3px;
+      }
+    }
+
+    button {
+      grid-area: action;
+      
+      text-align: right;
+      padding-right: 10px;
       background: var(--white1);
-      padding: 10px;
-      height: 100%;
-      width: 100%;
-
-      h1 {
-        font-size: 20px;
-        color: var(--grey3);
-        margin-bottom: 10px;
-      }
-
-      p {
-        color: var(--grey1);
-        font-size: 16px;
-        min-height: 50px;
-        max-height: 60px;
-        overflow-y: auto;
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-
-        &::-webkit-scrollbar {
-          display: none;
-        }
-      }
-
-      section {
-        display: inline-flex;
-
-        position: absolute;
-        bottom: 10px;
-        right: 15px;
-
-        button {
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
-  
-          background: transparent;
-          border-radius: 10px;
-          margin-left: 10px;
-          cursor: pointer;
-  
-          span {
-            margin-left: 5px;
-          }
-
-          &:nth-child(1) {
-            svg {
-              transition: fill 0.5s;
-            }
-
-            span {
-              color: var(--blue);
-              transition: color 0.5s;
-            }
-
-            &:hover {
-              svg {
-                fill: var(--blue-hover);
-              }
-
-              span {
-                color: var(--blue-hover);
-              }
-            }
-          }
-
-          &:nth-child(2) {
-            svg {
-              transition: fill 0.5s;
-            }
-
-            span {
-              color: var(--red);
-              transition: color 0.5s;
-            }
-
-            &:hover {
-              svg {
-                fill: var(--red-hover);
-              }
-              
-              span {
-                color: var(--red-hover);
-              }
-            }
-          }
-        }
-      }
+      cursor: pointer;
     }
   }
 `;

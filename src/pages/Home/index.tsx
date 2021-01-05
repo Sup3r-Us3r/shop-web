@@ -1,7 +1,9 @@
 import {useState, useEffect} from 'react';
 import {Grid, Wrapper, GridItemsList} from './styles';
-import {IoIosExpand as ExpandIcon} from 'react-icons/io';
-import {AiOutlineDelete as DeleteIcon} from 'react-icons/ai';
+import {
+  AiFillStar as FillStarIcon,
+  AiOutlineStar as OutlineStarIcon,
+} from 'react-icons/ai';
 
 import Menu from '../../components/Menu';
 import Header from '../../components/Header';
@@ -33,6 +35,20 @@ const Home = () => {
     }
   }
 
+  async function handleToggleFavoriteProduct(productId: number) {
+    try {
+      const response = await api.get(`product/togglestar/${productId}`);
+
+      if (response.status === 200) {
+        handleGetFavoriteProducts();
+      }
+    } catch (err) {
+      const {error} = err.response.data;
+
+      toastError(error);
+    }
+  }
+
   useEffect(() => {
     handleGetFavoriteProducts();
   }, []);
@@ -43,7 +59,6 @@ const Home = () => {
       <Wrapper>
         <Header title="Produtos em destaques" />
         <SearchBar
-          // productsData={favoriteProducts}
           allProducts={allFavoriteProducts}
           setProducts={setFavoriteProducts}
         />
@@ -51,20 +66,28 @@ const Home = () => {
           {favoriteProducts.map((product) => (
             <div key={product.id}>
               <img src={product.images[0].url} alt={product.name} />
-              <div>
-                <h1>{product.name}</h1>
-                <p>{product.description}</p>
-                <section>
-                  <button>
-                    <ExpandIcon color="#7495E6" size={20} />
-                    <span>Visualizar</span>
-                  </button>
-                  <button>
-                    <DeleteIcon color="#EB5858" size={20} />
-                    <span>Remover</span>
-                  </button>
-                </section>
-              </div>
+              <h1>{product.name}</h1>
+              <p>{product.description}</p>
+              <button>
+                {
+                  product.star
+                    ?
+                      <FillStarIcon
+                        color="#39D183"
+                        size={25}
+                        onClick={
+                          () => handleToggleFavoriteProduct(product.id)
+                        }
+                      />
+                    : <OutlineStarIcon
+                        color="#39D183"
+                        size={25}
+                        onClick={
+                          () => handleToggleFavoriteProduct(product.id)
+                        }
+                      />
+                }
+              </button>
             </div>
           ))}
         </GridItemsList>
